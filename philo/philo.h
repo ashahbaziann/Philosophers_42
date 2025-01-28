@@ -5,6 +5,7 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 typedef pthread_mutex_t t_mtx;
 
@@ -13,16 +14,17 @@ typedef struct s_data t_data;
 typedef struct s_fork
 {
     t_mtx   mutex;
-    int     mutex_id;  
+    int     mutex_id;
 } t_fork;
 
 typedef struct s_philo
 {
 	int				id;
-	pthread_t 		thread;
 	int				last_eat_time;
 	int 			eating_counter;
     int             is_full;
+	pthread_t 		thread;
+	t_mtx			handy_mutex;//last eat
 	t_fork          *left_fork;
     t_fork          *right_fork;
     t_data          *data;
@@ -43,7 +45,7 @@ typedef struct s_data
     t_philo         *philos;
 } t_data;
 
-typedef enum s_attr
+typedef enum e_attr
 {
     INIT,
     DESTROY,
@@ -52,6 +54,23 @@ typedef enum s_attr
     JOIN,
     CREATE,
 } t_attr;
+
+typedef enum e_time_unit
+{
+	SC ,
+	MS ,
+	US ,
+} t_time_unit;
+
+typedef enum e_philo_state
+{
+	EATING,
+	THINKING,
+	SLEEPING,
+	DIED,
+	TAKEN_LEFT_FORK,
+	TAKEN_RIGHT_FORK,
+} t_philo_state;
 
 int		validate_arguments(int argc, char **argv);
 long	ft_atoi(char *str);
@@ -65,7 +84,9 @@ int     thread_handler(pthread_t *thread, t_attr attr, void *(*routine)(void *),
 void    setter(t_mtx *mtx, int *dest, int src);
 int    getter(t_mtx *mtx, int *src);
 void    start_simulation(t_data *data);
-int is_sim_finished(t_data *data);
-int	ft_usleep(size_t milliseconds);
-size_t	get_current_time(void);
+int		is_sim_finished(t_data *data);
+void	accurate_usleep(t_data *data, long duration);
+long	get_current_time(t_time_unit unit);
+
+void print_state(t_philo *philo, t_philo_state state);
 #endif

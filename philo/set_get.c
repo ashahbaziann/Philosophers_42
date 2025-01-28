@@ -19,5 +19,5 @@ int getter(t_mtx *mtx, int *src)
 
 int is_sim_finished(t_data *data)
 {
-    return (getter(&data -> data_mtx,&data -> end_simulation));
+    return (getter(&data -> data_mtx, &data -> end_simulation));
 }

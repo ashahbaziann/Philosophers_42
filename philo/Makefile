@@ -11,6 +11,8 @@ SRCS = main.c\
 		wrappers.c\
 		set_get.c\
 		simulation.c\
+		print.c\
+
 
 OBJS = $(SRCS:.c=.o)
 

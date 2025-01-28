@@ -21,21 +21,40 @@ int	is_alpha(int c)
 	return (0);
 }
 
-size_t	get_current_time(void)
+long	get_current_time(t_time_unit unit)
 {
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-		write(2, "gettimeofday() error\n", 22);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+		write(2, "gettimeofday() failed\n", 22);
+	if (unit == SC)
+		return (time.tv_sec + time.tv_usec / 1e6);
+	else if (unit == MS)
+		return (time.tv_sec * 1e3 + time.tv_usec / 1e3);
+	else if (unit == US)
+		return (time.tv_usec + time.tv_sec * 1e6);
+	else
+		write(2, "Mistyped input\n", 15);
+	return (0);
 }
 
-int	ft_usleep(size_t milliseconds)
+void	accurate_usleep(t_data *data, long duration)
 {
-	size_t	start;
+	long	start;
+	long	passed;
+	long	rest;
 
-	start = get_current_time();
-	while ((get_current_time() - start) < milliseconds)
-		usleep(500);
-	return (0);
+	start = get_current_time(US);
+	while ((get_current_time(US) - start) < duration)
+	{
+		if(is_sim_finished(data))
+			break ;
+		passed = get_current_time(US) - start;
+		rest = duration - passed;
+		if (rest > 1e3)
+			usleep (duration / 2);
+		else
+			while (get_current_time(US) - start < duration)
+				;
+	}
 }

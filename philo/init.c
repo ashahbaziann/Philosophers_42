@@ -2,23 +2,15 @@
 
 static void give_forks(t_data *data, t_philo *philo, int i)
 {
-    if (i == data->philo_num - 1)
+    if (philo -> id % 2)
     {
         philo->right_fork = &data->forks[i];
-        philo->left_fork = &data->forks[0];
-    //    printf("Philosopher %d took fork %ld (left) and fork %ld (right)\n", 
-    //            philo->id, 
-    //            philo->left_fork - data->forks, 
-    //            philo->right_fork - data->forks);
+        philo->left_fork = &data->forks[(i + 1) % data -> philo_num];
     }
     else
     {
-        philo->left_fork = &data->forks[i];
         philo->right_fork = &data->forks[(i + 1) % data->philo_num];
-        // printf("Philosopher %d took fork %ld (left) and fork %ld (right)\n", 
-        //        philo->id, 
-        //        philo->left_fork - data->forks, 
-        //        philo->right_fork - data->forks);
+        philo->left_fork = &data->forks[i];
     }
 }
 static void init_philos(t_data *data)
@@ -35,6 +27,7 @@ static void init_philos(t_data *data)
 		philo->eating_counter = 0;
         philo->data = data;
         philo->is_full = 0;
+		mutex_handler(&philo -> handy_mutex, INIT);
         give_forks(data, philo, i);
 		i++;
 	}
@@ -45,7 +38,7 @@ static void init_arguments(t_data *data, char **argv)
 {
     int	i;
 
-	i = 1; 
+	i = 1;
 	data -> philo_num = ft_atoi(argv[i]);
 	data -> time_to_die = ft_atoi(argv[++i]);
 	data -> time_to_eat = ft_atoi(argv[++i]);
