@@ -30,12 +30,12 @@ long	get_current_time(t_time_unit unit)
 	if (unit == SC)
 		return (time.tv_sec + time.tv_usec / 1e6);
 	else if (unit == MS)
-		return (time.tv_sec * 1e3 + time.tv_usec / 1e3);
+		return (time.tv_sec * 1000 + time.tv_usec / 1000);
 	else if (unit == US)
-		return (time.tv_usec + time.tv_sec * 1e6);
+		return (time.tv_sec * 1000000 + time.tv_usec);
 	else
 		write(2, "Mistyped input\n", 15);
-	return (0);
+	return (-1);
 }
 
 void	accurate_usleep(t_data *data, long duration)
@@ -52,7 +52,7 @@ void	accurate_usleep(t_data *data, long duration)
 		passed = get_current_time(US) - start;
 		rest = duration - passed;
 		if (rest > 1e3)
-			usleep (duration / 2);
+			usleep (rest / 2);
 		else
 			while (get_current_time(US) - start < duration)
 				;

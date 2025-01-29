@@ -2,7 +2,7 @@ NAME = philo
 
 RM = rm -f
 
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=address
 
 SRCS = main.c\
 		utils.c\
@@ -12,6 +12,7 @@ SRCS = main.c\
 		set_get.c\
 		simulation.c\
 		print.c\
+		monitor_routine.c\
 
 
 OBJS = $(SRCS:.c=.o)

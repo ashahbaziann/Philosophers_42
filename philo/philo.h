@@ -20,8 +20,8 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	int				id;
-	int				last_eat_time;
-	int 			eating_counter;
+	long			last_eat_time;
+	long 			eating_counter;
     int             is_full;
 	pthread_t 		thread;
 	t_mtx			handy_mutex;//last eat
@@ -32,15 +32,18 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-    int				philo_num;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-    int             eating_limit;
-	int             begin_simulation;
-    int             end_simulation;
+    long			philo_num;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+    long            eating_limit;
+	long            begin_simulation;
+    int            	end_simulation;
     int             threads_created;
+	long				thread_index;
+	pthread_t		monitor;
     t_mtx           data_mtx;
+	t_mtx			print_mtx;
     t_fork          *forks;
     t_philo         *philos;
 } t_data;
@@ -81,12 +84,25 @@ int		is_alpha(int c);
 int		init_data(t_data *data, char **argv);
 int     mutex_handler(t_mtx *mtx, t_attr attr);
 int     thread_handler(pthread_t *thread, t_attr attr, void *(*routine)(void *), void *arg);
-void    setter(t_mtx *mtx, int *dest, int src);
-int    getter(t_mtx *mtx, int *src);
+void	setter_int(t_mtx *mtx, int *dest, int src);
+int		getter_int(t_mtx *mtx, int *src);
+void	setter_long(t_mtx *mtx, long *dest, long src);
+long	getter_long(t_mtx *mtx, long *src);
 void    start_simulation(t_data *data);
 int		is_sim_finished(t_data *data);
 void	accurate_usleep(t_data *data, long duration);
 long	get_current_time(t_time_unit unit);
 
 void print_state(t_philo *philo, t_philo_state state);
+
+//monitor_routine
+void *monitor_routine(void *routine);
+void count_alive_threads(long *thread_count, t_mtx *mtx);
+void *one_philo_routine(void *routine);
+
+
+
+void thinking(t_philo *philo, int help);
+
+void unsynchronize(t_philo *philo);
 #endif

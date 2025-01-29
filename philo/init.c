@@ -40,9 +40,9 @@ static void init_arguments(t_data *data, char **argv)
 
 	i = 1;
 	data -> philo_num = ft_atoi(argv[i]);
-	data -> time_to_die = ft_atoi(argv[++i]);
-	data -> time_to_eat = ft_atoi(argv[++i]);
-	data -> time_to_sleep = ft_atoi(argv[++i]);
+	data -> time_to_die = ft_atoi(argv[++i]) * 1000;
+	data -> time_to_eat = ft_atoi(argv[++i]) * 1000;
+	data -> time_to_sleep = ft_atoi(argv[++i]) * 1000;
     if (argv[5])
 	    data -> eating_limit = ft_atoi(argv[++i]);
     else
@@ -50,6 +50,7 @@ static void init_arguments(t_data *data, char **argv)
     data -> begin_simulation = 0;
     data -> end_simulation = 0;
     data -> threads_created = 0;
+    data -> thread_index = 0;
 }
 
 int	init_data(t_data *data, char **argv)
@@ -73,6 +74,7 @@ int	init_data(t_data *data, char **argv)
         i++;
     }
     mutex_handler(&data -> data_mtx, INIT);
+    mutex_handler(&data -> print_mtx, INIT);
 	init_philos(data);
 	return (0);
 }
