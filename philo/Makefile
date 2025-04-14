@@ -1,33 +1,30 @@
+.DEFAULT_GOAL := all
+
+CFLAGS = -Wall -Werror -Wextra -pthread
+
 NAME = philo
+SRC_DIR = srcs
+INCLUDE = -I includes
 
-RM = rm -f
-
-CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=address
-
-SRCS = main.c\
-		utils.c\
-		validate.c\
-		init.c\
-		wrappers.c\
-		set_get.c\
-		simulation.c\
-		print.c\
-		monitor_routine.c\
-
+SRCS = $(shell find $(SRC_DIR) -maxdepth 1 -name "*.c")
 
 OBJS = $(SRCS:.c=.o)
 
+
+%.o: %.c
+	cc $(CFLAGS) $(INCLUDE) -c $< -o $@
+
 all: $(NAME)
 
-$(NAME): $(OBJS) philo.h
-	cc $(CFLAGS) $(OBJS) -o $(NAME)
+$(NAME): $(OBJS)
+	cc $(CFLAGS) $(INCLUDE) $(OBJS) -o $(NAME)
 
 clean:
-	$(RM) $(OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re 
